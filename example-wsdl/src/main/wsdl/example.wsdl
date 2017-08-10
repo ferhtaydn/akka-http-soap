@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="TestJaxWsService"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://example.com/sample"
+                  targetNamespace="http://example.com/sample">
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://example.com/sample">
+            <!-- wrapper element of the request message -->
+            <xsd:element name="jaxWsTest1" type="tns:jaxWsTest1"/>
+
+            <!-- wrapper element of the response message -->
+            <xsd:element name="jaxWsTest1Response" type="tns:jaxWsTest1Response"/>
+
+            <!-- wrapper element of the fault message -->
+            <xsd:element name="UserDefinedFault" type="tns:UserDefinedFault"/>
+
+            <!-- wrapper element of the fault message -->
+            <xsd:complexType name="jaxWsTest1">
+                <xsd:sequence>
+                    <xsd:element name="information" type="xsd:string"/>
+                    <xsd:element name="count" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Type referenced by the wrapper element of the response message -->
+            <xsd:complexType name="jaxWsTest1Response">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Type referenced by the wrapper element of the fault message -->
+            <xsd:complexType name="UserDefinedFault">
+                <xsd:sequence>
+                    <xsd:element name="additionalInfo" type="xsd:int"/>
+                    <xsd:element name="detail" type="xsd:string"/>
+                    <xsd:element name="message" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- Request message -->
+    <wsdl:message name="jaxWsTest1Request">
+        <wsdl:part name="inputParameters" element="tns:jaxWsTest1"/>
+    </wsdl:message>
+
+    <!-- Response message -->
+    <wsdl:message name="jaxWsTest1Response">
+        <wsdl:part name="outputParameters" element="tns:jaxWsTest1Response"/>
+    </wsdl:message>
+
+    <!-- Fault message -->
+    <wsdl:message name="UserDefinedException">
+        <wsdl:part name="fault" element="tns:UserDefinedFault"/>
+    </wsdl:message>
+
+    <!-- Port type -->
+
+    <wsdl:portType name="TestJaxWs">
+        <!-- Operation -->
+        <wsdl:operation name="jaxWsTest1">
+            <wsdl:input message="tns:jaxWsTest1Request"/>
+            <wsdl:output message="tns:jaxWsTest1Response"/>
+            <wsdl:fault name="UserDefinedFault"
+                        message="tns:UserDefinedException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- Binding (SOAP 1.2/HTTP binding) -->
+    <wsdl:binding name="testJaxWsBinding" type="tns:TestJaxWs">
+        <!-- document/literal/wrapped -->
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <!-- Operation -->
+        <wsdl:operation name="jaxWsTest1">
+            <soap12:operation/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="UserDefinedFault">
+                <soap12:fault name="UserDefinedFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- Service -->
+    <wsdl:service name="TestJaxWsService">
+        <!-- Port -->
+        <wsdl:port name="testJaxWs" binding="tns:testJaxWsBinding">
+            <soap12:address location="http://webhost:8085/wsrm/TestJaxWsService"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
